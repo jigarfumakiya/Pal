@@ -1,0 +1,103 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="wrap_content"
+    android:layout_height="wrap_content" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageButton
+                android:layout_width="300dp"
+                android:layout_height="280dp"
+                android:id="@+id/c_photo"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:onClick="photoclick"
+                android:layout_gravity="center_horizontal"
+                android:scaleType="fitCenter"
+               />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/loc"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:editable="true"
+                android:enabled="true"
+                android:layout_below="@+id/c_photo"
+                android:hint="@string/location"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/black"
+                android:inputType="text"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/detail"
+                android:layout_alignLeft="@+id/loc"
+                android:layout_alignStart="@+id/loc"
+                android:layout_alignRight="@+id/loc"
+                android:layout_alignEnd="@+id/loc"
+                android:layout_below="@+id/loc"
+                android:enabled="true"
+                android:hint="@string/detail"
+                android:gravity="left"
+                android:textColor="@color/black" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:id="@+id/save"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:background="@color/Button"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:onClick="savedata"
+                android:layout_below="@+id/detail"
+                android:enabled="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/textView"
+                android:layout_above="@+id/loc"
+                android:layout_alignRight="@+id/c_photo"
+                android:layout_alignEnd="@+id/c_photo"
+                android:layout_marginRight="223dp"
+                android:layout_marginEnd="223dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/textView2"
+                android:layout_alignTop="@+id/textView"
+                android:layout_centerHorizontal="true" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

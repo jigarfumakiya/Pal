@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Pal</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="location">Location</string>
+    <string name="detail">Detail</string>
+    <string name="save">Save</string>
+    <string name="datasave">Moment Captured !! </string>
+    <string name="fistpage">Add Another</string>
+</resources>

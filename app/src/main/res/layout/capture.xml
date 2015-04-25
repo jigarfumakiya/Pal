@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/datasave"
+        android:id="@+id/Msg"
+        android:enabled="true"
+        android:inputType="textMultiLine"
+        android:textSize="22sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fistpage"
+        android:id="@+id/Add"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/Button"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/black"
+        android:onClick="addanother"
+        android:layout_below="@+id/Msg"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:enabled="true"
+        android:textStyle="bold"
+
+        />
+</RelativeLayout>
