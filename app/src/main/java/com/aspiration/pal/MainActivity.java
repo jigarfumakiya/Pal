@@ -200,7 +200,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             insert.put("Detail", det);
           //  insert.saveInBackground();
             insert.saveEventually();
-            Toast.makeText(getApplicationContext(), "Your data saved", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Your data Saved", Toast.LENGTH_LONG).show();
 
             Intent i = new Intent(getApplication(), Capture.class);
             startActivity(i);
