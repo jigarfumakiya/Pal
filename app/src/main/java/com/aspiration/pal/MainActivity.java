@@ -67,9 +67,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
 
         ParseObject test = new ParseObject("Test");
-        test.put("name","jigarfumakiya");
+        test.put("name","kartik");
         test.put("Lastname","fumakiya");
-        test.saveInBackground();
+        //test.saveInBackground();
+        test.saveEventually();
         Toast.makeText(getApplicationContext(),"Your data saved on parse",Toast.LENGTH_SHORT).show();
 
 
@@ -157,20 +158,23 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
-
         String path=null;
-        try{
-
-
+        try
+        {
             Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
             thumbnail = Bitmap.createScaledBitmap(thumbnail,photo.getWidth(),photo.getHeight(), true);
             ImageView imageView = (ImageView) findViewById(R.id.c_photo);
             imageView.setImageBitmap(thumbnail);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
+            thumbnail.compress(Bitmap.CompressFormat.PNG,100,stream);
+            byte[] byteArray=stream.toByteArray();
 
-
-        }catch(Exception ee){
+            file = new ParseFile("JPEG_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".png", byteArray);
+            imageView.destroyDrawingCache();
+        }
+        catch(Exception ee)
+        {
             ee.printStackTrace();
         }
     }
@@ -183,17 +187,19 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             Toast.makeText(getApplicationContext(), "You must upload Image", Toast.LENGTH_SHORT).show();
         } else if (locationView.getText().toString().isEmpty()) {
 
-            locationView.setError("You Must Enter Loaction");
-        } else
+            locationView.setError("You Must Enter Location");
+        }
+        else
         {
-             loc = locationView.getText().toString();
+            loc = locationView.getText().toString();
             det = deatil.getText().toString();
 
             ParseObject insert = new ParseObject("Data");
             insert.put("Image", file);
-            insert.put("Loaction", loc);
+            insert.put("Location", loc);
             insert.put("Detail", det);
-            insert.saveInBackground();
+          //  insert.saveInBackground();
+            insert.saveEventually();
             Toast.makeText(getApplicationContext(), "Your data saved", Toast.LENGTH_LONG).show();
 
             Intent i = new Intent(getApplication(), Capture.class);
@@ -207,47 +213,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         lint.setText(String.valueOf(location.getLatitude()));
         longt.setText(String.valueOf(location.getLongitude()));
-/*
 
-        Geocoder geocoder;
-        List<Address> addresses = null;
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        try
-        {
-            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        String city = addresses.get(0).getLocality();
-        String state = addresses.get(0).getAdminArea();
-        String country = addresses.get(0).getCountryName();
-        String postalCode = addresses.get(0).getPostalCode();
-        String knownName = addresses.get(0).getFeatureName();
-        Toast.makeText(getApplicationContext() ,"country" +country,Toast.LENGTH_LONG).show();
-*/
-
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        String result = null;
-        try {
-            List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            if (addressList != null && addressList.size() > 0)
-            {
-                Address address = addressList.get(0);
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i <address.getMaxAddressLineIndex(); i++) {
-                    sb.append(address.getAddressLine(i)).append("\n");
-                }
-                sb.append(address.getLocality()).append("\n");
-                sb.append(address.getPostalCode()).append("\n");
-                sb.append(address.getCountryName());
-                result = sb.toString();
-            }
-        } catch (IOException e) {
-            Log.e("name", "Unable connect to Geocoder", e);
-        }
     }
 
     @Override
