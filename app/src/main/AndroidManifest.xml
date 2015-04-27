@@ -18,9 +18,7 @@
         android:theme="@style/AppTheme"
         android:name=".ApplicatioFile"
         >
-        <service
-            android:name=".FetchAddressIntentService"
-            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >

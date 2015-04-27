@@ -13,6 +13,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -40,7 +42,8 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class MainActivity extends ActionBarActivity implements LocationListener {
+public class MainActivity extends ActionBarActivity implements LocationListener
+{
 
     public static final int CAMERA_PIC_REQUEST =0 ;
     ImageButton photo;
@@ -50,7 +53,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     ParseFile file;
     TextView lint,longt;
     StringBuilder result = new StringBuilder();
-
+    AppLocationService appLocationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +66,17 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         lint=(TextView)findViewById(R.id.textView);
         longt=(TextView)findViewById(R.id.textView2);
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+        LocationManager location = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        location.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
 
-        ParseObject test = new ParseObject("Test");
-        test.put("name","kartik");
-        test.put("Lastname","fumakiya");
-        //test.saveInBackground();
-        test.saveEventually();
-        Toast.makeText(getApplicationContext(),"Your data saved on parse",Toast.LENGTH_SHORT).show();
+
+
+
+            //you can hard-code the lat & long if you have issues with getting it
+            //remove the below if-condition and use the following couple of lines
+            //double latitude = 37.422005;
+            //double longitude = -122.084095
+
 
 
     }
@@ -172,6 +177,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
             file = new ParseFile("JPEG_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".png", byteArray);
             imageView.destroyDrawingCache();
+            deleteFile("byteArray");
         }
         catch(Exception ee)
         {
@@ -198,8 +204,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             insert.put("Image", file);
             insert.put("Location", loc);
             insert.put("Detail", det);
-          //  insert.saveInBackground();
-            insert.saveEventually();
+           insert.saveInBackground();
+           // insert.saveEventually();
             Toast.makeText(getApplicationContext(), "Your data Saved", Toast.LENGTH_LONG).show();
 
             Intent i = new Intent(getApplication(), Capture.class);
@@ -214,6 +220,16 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         lint.setText(String.valueOf(location.getLatitude()));
         longt.setText(String.valueOf(location.getLongitude()));
 
+        if (location != null)
+        {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            LocationAddress locationAddress = new LocationAddress();
+            locationAddress.getAddressFromLocation(latitude, longitude,getApplicationContext(), new GeocoderHandler());
+        } else
+        {
+            Toast.makeText(getApplicationContext(),"Worng",Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -232,5 +248,20 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     }
 
 
-   }
+    private class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            String locationAddress;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    break;
+                default:
+                    locationAddress = null;
+            }
+            locationView.setText(locationAddress);
+        }
+    }
+}
 
