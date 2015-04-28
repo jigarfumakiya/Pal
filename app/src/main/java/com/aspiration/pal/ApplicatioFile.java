@@ -7,8 +7,7 @@ import com.parse.Parse;
 /**
  * Created by admin on 4/24/2015.
  */
-public class ApplicatioFile extends Application
-{
+public class ApplicatioFile extends Application {
 
     @Override
     public void onCreate() {

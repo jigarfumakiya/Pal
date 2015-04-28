@@ -2,16 +2,13 @@ package com.aspiration.pal;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.widget.TextView;
 
 /**
  * Created by admin on 4/24/2015.
  */
-public class Capture extends ActionBarActivity
-{
+public class Capture extends ActionBarActivity {
 
 
     @Override

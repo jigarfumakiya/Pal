@@ -16,8 +16,7 @@ public class LocationAddress {
     private static final String TAG = "LocationAddress";
 
     public static void getAddressFromLocation(final double latitude, final double longitude,
-      final Context context, final Handler handler)
-    {
+                                              final Context context, final Handler handler) {
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -44,15 +43,14 @@ public class LocationAddress {
                     if (result != null) {
                         message.what = 1;
                         Bundle bundle = new Bundle();
-                        result = "\n\nAddress:\n" + result;
+                        result = "" + result;
 
-                        bundle.putString("Address", result);
+                        bundle.putString("address", result);
                         message.setData(bundle);
                     } else {
                         message.what = 1;
                         Bundle bundle = new Bundle();
-                        result = "Latitude: " + latitude + " Longitude: " + longitude +
-                                "\n Unable to get address for this lat-long.";
+                        result = " Unable to get address for this lat-long.";
                         bundle.putString("address", result);
                         message.setData(bundle);
                     }
