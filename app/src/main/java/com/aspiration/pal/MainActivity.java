@@ -101,9 +101,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
                 }
 
-
             }
-
         }
     }
 
@@ -141,8 +139,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             byte[] byteArray = stream.toByteArray();
 
 
-
             File = new ParseFile("image.png", byteArray);
+
+
 
             File.saveInBackground(new SaveCallback() {
                 @Override
@@ -154,6 +153,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                     Toast.makeText(getApplicationContext(), "Now your image has been set", Toast.LENGTH_SHORT).show();
                 }
             });
+
 
 
         } catch (Exception ee) {
@@ -191,13 +191,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location)
+    {
 
-         double lat=location.getLatitude();
-         double lon=location.getLongitude();
-       // locationView.setText(String.valueOf(lat)+(String .valueOf(lon)));
-
-        }
+    }
 
 
 
