@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,6 +27,9 @@ import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.security.Provider;
+import java.util.List;
+import java.util.Locale;
 
 
 public class MainActivity extends ActionBarActivity implements LocationListener {
@@ -33,13 +39,17 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     EditText locationView, deatil;
     String mCurrentPhotoPath;
     String loc, det;
+    double lat,log;
     ParseFile File;
 
+    LocationManager locmanger;
+    String Provider;
     StringBuilder result = new StringBuilder();
     AppLocationService appLocationService;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
@@ -47,14 +57,57 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         locationView = (EditText) findViewById(R.id.loc);
         deatil = (EditText) findViewById(R.id.detail);
 
-        LocationManager location = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-      location.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        //FETACHING lONGTITUDE AND LATITIDUTE
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        Criteria c = new Criteria();
+        String provider;
+        provider = locationManager.getBestProvider(c, false);
+
+        Location loc = locationManager.getLastKnownLocation(provider);
+        if (loc != null)
+        {
+             lat = loc.getLatitude();
+             log = loc.getLongitude();
+           // deatil.setText(String.valueOf(lat) + "/" + (String.valueOf(log)));
+
+            Geocoder geo = new Geocoder(getApplicationContext(), Locale.getDefault());
+            String mylocation;
+            if (Geocoder.isPresent()) {
+                try
+                {
+                    List<Address> address = geo.getFromLocation(lat, log, 1);
+
+                    if (address != null && address.size() > 0) {
+                        Address add = address.get(0);
+                        String addressText = String.format("%s, %s, %s",
+                                // If there's a street address, add it
+                                add.getMaxAddressLineIndex() > 0 ? add.getAddressLine(0) : "",
+                                // Locality is usually a city
+                                add.getLocality(),
+                                // The country of the address
+                                add.getCountryName());
+                        locationView.setText(addressText);
+                        if (locationView == null) {
+                            Toast.makeText(getApplicationContext(), "No provider", Toast
+                                    .LENGTH_LONG).show();
+                        }
+                    }
 
 
+                } catch (Exception e) {
+
+                }
+
+
+            }
+
+        }
     }
 
-
-    public void onBackPressed() {
+     public void onBackPressed() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -66,86 +119,18 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
 
-        /*Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-        if
-        (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-            try
-            {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                Log.e("File:", "Error while creating file" + ex.getMessage());
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, 1);
-            }
-        }
-    }*/
     }
 
-    /*private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        //Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  *//* prefix *//*
-                ".jpg",         *//* suffix *//*
-                storageDir      *//* directory *//*
-        );
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }*/
 
-    private void setPic() {
-        // Get the dimensions of the View
-
-        int targetW = photo.getWidth();
-        int targetH = photo.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-
-        //Bitmap to Bytes[]
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-
-        //  file = new ParseFile("JPEG_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".png", byteArray);
-
-        photo.setImageBitmap(bitmap);
-        photo.setAdjustViewBounds(true);
-        //photo.setFitToScreen(true);
-    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         String path = null;
-        try {
+        try
+        {
             Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
             thumbnail = Bitmap.createScaledBitmap(thumbnail, photo.getWidth(), photo.getHeight(), true);
             ImageView imageView = (ImageView) findViewById(R.id.c_photo);
@@ -155,7 +140,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             thumbnail.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
 
-            //file = new ParseFile("JPEG_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".png", byteArray);
+
 
             File = new ParseFile("image.png", byteArray);
 
@@ -194,7 +179,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             insert.put("Image", File);
             insert.put("Location", loc);
             insert.put("Detail", det);
-
+            insert.put("Longitude",String.valueOf(lat));
+            insert.put("Latitude",String.valueOf(log));
             insert.saveEventually();
             //insert.saveInBackground();
             Toast.makeText(getApplicationContext(), "Your data Saved", Toast.LENGTH_LONG).show();
@@ -207,19 +193,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
 
+         double lat=location.getLatitude();
+         double lon=location.getLongitude();
+       // locationView.setText(String.valueOf(lat)+(String .valueOf(lon)));
 
-   /*     lint.setText(String.valueOf(location.getLatitude()));
-        longt.setText(String.valueOf(location.getLongitude()));
-*/
-        if (location != null) {
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            LocationAddress locationAddress = new LocationAddress();
-            locationAddress.getAddressFromLocation(latitude, longitude, getApplicationContext(), new GeocoderHandler());
-        } else {
-            Toast.makeText(getApplicationContext(), "Wrong", Toast.LENGTH_SHORT).show();
         }
-    }
+
+
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -235,22 +215,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     public void onProviderDisabled(String provider) {
 
     }
-
-
-    private class GeocoderHandler extends Handler {
-        @Override
-        public void handleMessage(Message message) {
-            String locationAddress;
-            switch (message.what) {
-                case 1:
-                    Bundle bundle = message.getData();
-                    locationAddress = bundle.getString("address");
-                    break;
-                default:
-                    locationAddress = null;
-            }
-            locationView.setText(locationAddress);
-        }
-    }
 }
+
+
 
